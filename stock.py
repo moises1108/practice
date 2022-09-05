@@ -4,15 +4,16 @@ class Security():
 
 class Wallet():
     # why was this causing moises to have the same portfolio as Joe?
+    # https://stackoverflow.com/questions/4841782/python-constructor-and-default-value > Explained
     # def __init__(self, name, balance=0,portfolio={}):
     #     self.name = name
     #     self.balance = balance
     #     self.portfolio = portfolio
+
     def __init__(self, name, balance=0):
         self.name = name
         self.balance = balance
         self.portfolio = {}
-
 
     
     # Initial Setup: deposit, withdraw, checkBalance independent to transaction
@@ -26,6 +27,7 @@ class Wallet():
         return print(f"Sucessfully withdrawn: Remaining balance: {self.balance}")
     def checkBalance(self):
         return print(f"your balance is: {self.balance}")
+
     # Porfolio interaction
     def checkPortfolio(self):
         return print(f"Owner: {self.name} Portfolio:{self.portfolio}")
@@ -49,10 +51,12 @@ class Exchange():
     
     def transactExchange(self, name, action, security, quantity):
         if action == 'buy' and not self.securityInExchange(security,action):
+            # I want to buy but there are no asks, then append as a bid
             self.securities[security][0].append(quantity)
             return print('You are trying to buy but there are no asks, so no transaction was made',self.securities)
 
         elif action == 'buy' and self.securityInExchange(security,action):
+            # I want to buy and there are asks, so I fill until no asks or until toBeFilled == 0
             toBeFilled = quantity
             while toBeFilled > 0 and len(self.securities[security][1])>0:
                 lastAskQty = self.securities[security][1].pop()
@@ -70,10 +74,12 @@ class Exchange():
                 print(f"Order of {quantity} completely filled")    
             name.modifyPort(security,quantity-toBeFilled)
         elif action == 'sell' and not self.securityInExchange(security,action):
+            # I want to buy but there are no asks, then append as a bid
             self.securities[security][1].append(quantity)
             return print('You are trying to sell but there are no bids',self.securities)
 
         elif action == 'sell' and self.securityInExchange(security,action):
+            # I want to buy and there are bids, so I fill until no bids or until toBeFilled == 0
             toBeFilled = quantity
             while toBeFilled > 0 and len(self.securities[security][0])>0:
                 lastAskQty = self.securities[security][0].pop()
