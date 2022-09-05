@@ -46,10 +46,42 @@ class Wallet():
 class Exchange():
     def __init__(self, region): #{'AAPL':[[bids],[asks]]}
         self.region = region #EMEA, AMER, APAC
-        self.securities = {}
+        #self.securities = {} - en vez de tener un variable podrias partirlo en 2
+        self.bids = {}
+        self.asks = {}
         return print(f"Exchange created with region: {region}")
     
+    ### comienzo de lo que escribi ###
+    # yo hice algo parecido para prepararme para la entrevista para Talos, asi que lo hago como lo hice
     def transactExchange(self, name, action, security, quantity):
+        # yo pondria el action como el parent condition, asi:
+        if action == 'buy':
+            if not self.asks:
+                self.bids[security].append(quantity)
+                return
+            else:
+                while quantity > 0:
+                    lastAskQty = self.asks[security][-1] # we don't have to pop, we can just peek/read last element
+                    if lastAskQty > quantity:
+                        self.asks[security][-1] = lastAskQty - quantity # we replace lastAskQty with new remaining quantity
+                    else:
+                        self.asks[security].pop() # more quantity than the ask quantity, so we pop lastAskQty as it has been fully matched
+                    quantity -= lastAskQty # we subtract matched amount, it should still work if quantity goes below 0 as we do the necessary changes between liens 64-67
+        # y aca lo mismo, pero para sell
+        if action == 'sell':
+            if not self.bids:
+                self.asks[security].append(quantity)
+                return
+            else:
+                while quantity > 0:
+                    lastBidQty = self.bids[security][-1] 
+                    if lastBidQty > quantity:
+                        self.bids[security][-1] = lastBidQty - quantity 
+                    else:
+                        self.bids[security].pop() 
+                    quantity -= lastBidQty
+        ### fin de lo que escribi ###
+        
         if action == 'buy' and not self.securityInExchange(security,action):
             # I want to buy but there are no asks, then append as a bid
             self.securities[security][0].append(quantity)
