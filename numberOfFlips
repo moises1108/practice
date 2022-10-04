@@ -1,0 +1,42 @@
+a1 = [1,2,3,5] # 11
+a2 = [2,3,7,3]
+t1 = 16 #1 
+
+class minNumberOfFlips():
+    def __init__(self,array1, array2, target):
+        self.array1 = array1
+        self.array2 = array2
+        self.target = target
+        self.gains = []
+        self.sumArray = 0
+        self.totalFlips = 0
+    
+    def findMinFlips(self):
+        self.createGains()
+        self.sortArray()
+        self.sumOfArray()
+        difference = self.target - self.sumArray
+        while difference >= 0:
+            difference -= self.gains.pop()
+            self.totalFlips += 1
+        return self.totalFlips
+        
+    def createGains(self):
+        for i in range(len(self.array1)):
+            self.gains.append(self.array2[i] - self.array1[i])
+            
+    def sortArray(self):
+        self.gains.sort()
+
+    def sumOfArray(self):
+        self.sumArray = sum(self.array1)
+
+testing1 = minNumberOfFlips(a1,a2,t1)
+print(testing1.findMinFlips())
+
+
+# create an array with the gains for each index flipped
+# sort the array
+# check the sum of array a 
+# start flipping from highest gain to lowest gain and check if I hit the target
+
