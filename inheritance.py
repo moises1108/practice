@@ -37,7 +37,8 @@ class Car():
 
 class Lux(Car):
     def __init__(self,capacity):
-        super().__init__(capacity)
+        super().__init__(capacity) #python 3
+        # super(ChildB, self).__init__() # python2
         self.cType = 'Lux'
     
     def ride_style(self):
